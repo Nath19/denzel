@@ -38,12 +38,7 @@ app.get("/movies/search", (request, response) => {
       });
   });
 
-
-
-
-
-
-//function ok => random movies with metascore greather than 70
+//random movies with metascore greather than 70
 app.get("/movies", (request, response) => {
    // db.movie.find({metascore : {$gt: 70}})
   // { $sample: { size: 1 } } random query on mongodb
@@ -66,9 +61,7 @@ app.get("/movies/populate", async (request, response) => {
     });
   });
 
-
-
-//get the id of our choices
+//get the movie by id of our choices
 app.get("/movies/:id", (request, response) => {
     collection.findOne({ "id":request.params.id}, (error, result) => {
         if(error) {
