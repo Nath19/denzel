@@ -21,7 +21,7 @@ async function main(){
 
     try {
 
-        var movies = await imdb(DENZEL_IMDB_ID);
+       // var movies = await imdb(DENZEL_IMDB_ID);
         MongoClient.connect(uri, { useNewUrlParser: true }, (error, client) => {
                 if(error) throw error;
                 database = client.db(DATABASE_NAME);
@@ -34,6 +34,9 @@ async function main(){
             movies: Int
             random: Movie
             movie(id: String): Movie
+            WatchedDateReview(id: String, date: String, review: String): String
+            search(limit: Int, metascore: Int): [Movie]
+
           }
           type Movie {
             link: String
@@ -63,7 +66,45 @@ async function main(){
               const resultat = await collection.findOne({ "id": id})
               return resultat;
           },
-       
+          WatchedDateReview: async (root, {id, date, review}) => {
+
+            const resultat = await collection.updateOne({"id": id}, {$set: {"date":date, "review":review}});
+            if(resultat.result.nModified != 0)
+            {
+              return "Success";
+            } 
+            else 
+            {
+              return "Not success";
+            }
+        },
+        /*
+        // We can test search with the following GraphQl command
+              {
+                search (limit:5, metascore:70){
+                  link
+                  metascore
+                synopsis
+                  title
+                  year}
+              }
+        */
+
+
+        search: async (root, {limit, metascore}) => {
+            if(limit==undefined)
+            {
+              limit = 5;
+            }
+            if(metascore==undefined)
+            {
+              metascore=0;
+            }
+            const resultat = await collection.aggregate([{$match:{"metascore": {$gte:Number(metascore)}}}, {$limit:Number(limit)}, {$sort:{"metascore":-1}}]).toArray()
+            return resultat
+            
+        },
+
         },
       }
         const schema = makeExecutableSchema({
