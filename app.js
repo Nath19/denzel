@@ -84,7 +84,7 @@ app.get("/movies/:id", (request, response) => {
 
 //set the date and review
 app.post("/movies/:id", (request, response) => {
-    collection.updateOne({"id":request.params.id},{$set :{"date":request.body.date,"review":request.body.review}}, (error, result) => {
+    collection.updateOne({"id":request.params.id},{$set :{"date":request.query.date,"review":request.query.review}}, (error, result) => {
         if(error) {
             return response.status(500).send(error);
         }
