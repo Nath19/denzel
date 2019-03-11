@@ -30,7 +30,17 @@ app.listen(9292, () => {
 //metascore - filter by metascore
 //$sample to get a random movie
 app.get("/movies/search", (request, response) => {
-    collection.aggregate([{$match: { metascore: { $gte: Number(request.query.metascore) } }},{ $sample: { size:  Number(request.query.limit) }},{$sort:{"metascore":-1}} ]).toArray((error, result) => {
+    var metascore = request.query.metascore;
+    var limit = request.query.limit ;
+    if(metascore==undefined)
+    {
+        metascore = 0;
+    }
+    if(limit==undefined)
+    {
+        limit =5;
+    }
+    collection.aggregate([{$match: { metascore: { $gte: Number(metascore) } }},{ $sample: { size:  Number(limit) }},{$sort:{"metascore":-1}} ]).toArray((error, result) => {
         if (error) {
           return response.status(500).send(error);
         }
