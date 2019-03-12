@@ -25,7 +25,6 @@ app.listen(9292, () => {
     });
 });
 
-
 //limit - number of movies to return
 //metascore - filter by metascore
 //$sample to get a random movie
@@ -80,7 +79,6 @@ app.get("/movies/:id", (request, response) => {
         response.send(result);
     });
 });
-
 
 //set the date and review
 app.post("/movies/:id", (request, response) => {
